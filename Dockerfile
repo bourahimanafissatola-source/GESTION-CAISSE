@@ -1,8 +1,14 @@
 FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev zip nodejs npm \
-    && docker-php-ext-install zip pdo pdo_mysql
+    git \
+    unzip \
+    libzip-dev \
+    libpng-dev \
+    zip \
+    nodejs \
+    npm \
+    && docker-php-ext-install zip pdo pdo_mysql gd
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
