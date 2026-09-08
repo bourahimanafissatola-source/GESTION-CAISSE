@@ -43,18 +43,48 @@
             <p>Version PRO 2026</p>
         </div>
         <div class="menu">
-            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="bi bi-grid"></i> Tableau de bord</a>
-            <a href="{{ route('entrees.index') }}" class="{{ request()->routeIs('entrees.*') ? 'active' : '' }}"><i class="bi bi-arrow-down-circle"></i> Entrées</a>
-            <a href="{{ route('sorties.index') }}" class="{{ request()->routeIs('sorties.*') ? 'active' : '' }}"><i class="bi bi-arrow-up-circle"></i> Sorties</a>
-            <a href="{{ route('categories-entrees.index') }}" class="{{ request()->routeIs('categories-entrees.*') ? 'active' : '' }}"><i class="bi bi-tags"></i> Catégories entrées</a>
-            <a href="{{ route('categories-sorties.index') }}" class="{{ request()->routeIs('categories-sorties.*') ? 'active' : '' }}"><i class="bi bi-tags"></i> Catégories sorties</a>
-            {{-- UTILISATEURS --}}
-             <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}"> <i class="bi bi-people"></i> Utilisateurs </a> 
-             {{-- RAPPORTS --}}
-              <a href="{{ route('rapports.index') }}" class="{{ request()->routeIs('rapports.*') ? 'active' : '' }}"> <i class="bi bi-file-earmark-text"></i> Rapports </a>
-             {{-- PROFIL --}} 
-             <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}"> <i class="bi bi-person-circle"></i> Mon profil </a>
-        </div>
+    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+        <i class="bi bi-grid"></i> Tableau de bord
+    </a>
+
+    <a href="{{ route('entrees.index') }}" class="{{ request()->routeIs('entrees.*') ? 'active' : '' }}">
+        <i class="bi bi-arrow-down-circle"></i> Entrées
+    </a>
+
+    <a href="{{ route('sorties.index') }}" class="{{ request()->routeIs('sorties.*') ? 'active' : '' }}">
+        <i class="bi bi-arrow-up-circle"></i> Sorties
+    </a>
+
+    <a href="{{ route('categories-entrees.index') }}" class="{{ request()->routeIs('categories-entrees.*') ? 'active' : '' }}">
+        <i class="bi bi-tags"></i> Catégories entrées
+    </a>
+
+    <a href="{{ route('categories-sorties.index') }}" class="{{ request()->routeIs('categories-sorties.*') ? 'active' : '' }}">
+        <i class="bi bi-tags"></i> Catégories sorties
+    </a>
+
+    {{-- Menus réservés uniquement à l'ADMIN --}}
+    @if(Auth::check() && Auth::user()->role === 'admin')
+
+        <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+            <i class="bi bi-people"></i> Utilisateurs
+        </a>
+
+        <a href="{{ route('activites.index') }}" class="{{ request()->routeIs('activites.*') ? 'active' : '' }}">
+            <i class="bi bi-clock-history"></i> Journal d'activité
+        </a>
+
+        <a href="{{ route('rapports.index') }}" class="{{ request()->routeIs('rapports.*') ? 'active' : '' }}">
+            <i class="bi bi-file-earmark-text"></i> Rapports
+        </a>
+
+    @endif
+
+    {{-- Profil : visible pour tout le monde --}}
+    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
+        <i class="bi bi-person-circle"></i> Mon profil
+    </a>
+</div>
     </div>
     <div class="main">
         <div class="topbar">

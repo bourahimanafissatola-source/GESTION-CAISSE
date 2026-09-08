@@ -87,6 +87,105 @@
         .switch-link { text-align: center; margin-top: 1.5rem; font-size: .85rem; color: var(--ink-soft); }
         .switch-link a { color: var(--forest); font-weight: 500; text-decoration: none; }
         .switch-link a:hover { text-decoration: underline; }
+        ```css
+/* ================================
+   RESPONSIVE - CONNEXION
+   ================================ */
+
+@media (max-width: 768px) {
+
+    .auth-split {
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .auth-brand {
+        width: 100%;
+        min-height: auto;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .auth-brand h1 {
+        font-size: 1.3rem;
+    }
+
+    .auth-brand p.tagline {
+        font-size: .8rem;
+    }
+
+    .auth-brand .quote {
+        font-size: .9rem;
+        line-height: 1.5;
+        max-width: 100%;
+    }
+
+    .auth-brand .quote .mark {
+        font-size: 1.5rem;
+    }
+
+    .auth-brand .footnote {
+        font-size: .7rem;
+    }
+
+    .auth-form-side {
+        width: 100%;
+        padding: 2rem 1.25rem;
+        align-items: flex-start;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .auth-card h2 {
+        font-size: 1.25rem;
+    }
+
+    .auth-card p.sub {
+        font-size: .85rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-row input {
+        padding: .75rem .85rem;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        padding: .85rem;
+        font-size: .95rem;
+    }
+
+    .form-options {
+        flex-wrap: wrap;
+        gap: .8rem;
+        font-size: .8rem;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .auth-brand {
+        padding: 1.2rem;
+    }
+
+    .auth-form-side {
+        padding: 1.5rem 1rem;
+    }
+
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-options a {
+        margin-top: .2rem;
+    }
+}
+```
+
     </style>
 </head>
 <body>
@@ -153,12 +252,6 @@
 
     <button type="submit" class="btn-primary">Se connecter</button>
 </form>
-
-            @if (Route::has('register'))
-                <div class="switch-link">
-                    Pas encore de compte ? <a href="{{ route('register') }}">Créer un compte</a>
-                </div>
-            @endif
         </div>
     </div>
 </div>

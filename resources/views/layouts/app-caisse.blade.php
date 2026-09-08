@@ -205,15 +205,22 @@
             <a href="{{ route('categories-sorties.index') }}" class="{{ request()->routeIs('categories-sorties.*') ? 'active' : '' }}">
                 <i class="bi bi-tags"></i> Catégories sorties
             </a>
-            <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
-                <i class="bi bi-people"></i> Utilisateurs
-            </a>
-            <a href="{{ route('activites.index') }}" class="{{ request()->routeIs('activites.*') ? 'active' : '' }}">
-    <i class="bi bi-clock-history"></i> Journal d'activité
-</a>
-            <a href="{{ route('rapports.index') }}" class="{{ request()->routeIs('rapports.*') ? 'active' : '' }}">
-                <i class="bi bi-file-earmark-text"></i> Rapports
-            </a>
+         
+                    @auth
+    @if(auth()->user()->role === 'admin')
+        <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+            <i class="bi bi-people"></i> Utilisateurs
+        </a>
+
+        <a href="{{ route('activites.index') }}" class="{{ request()->routeIs('activites.*') ? 'active' : '' }}">
+            <i class="bi bi-clock-history"></i> Journal d'activité
+        </a>
+
+        <a href="{{ route('rapports.index') }}" class="{{ request()->routeIs('rapports.*') ? 'active' : '' }}">
+            <i class="bi bi-file-earmark-text"></i> Rapports
+        </a>
+    @endif
+@endauth
             <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
                 <i class="bi bi-person-circle"></i> Mon profil
             </a>
