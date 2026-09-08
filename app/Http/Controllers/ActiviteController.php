@@ -19,6 +19,10 @@ class ActiviteController extends Controller
 
         $utilisateurs = \App\Models\User::orderBy('name')->get();
 
-        return view('activites.index', compact('logs', 'utilisateurs'));
+        $enLigne = \App\Models\User::where('last_seen_at', '>=', now()->subMinutes(5))
+            ->orderBy('last_seen_at', 'desc')
+            ->get();
+
+        return view('activites.index', compact('logs', 'utilisateurs', 'enLigne'));
     }
 }
