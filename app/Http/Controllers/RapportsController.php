@@ -5,9 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Entree;
 use App\Models\Sortie;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class RapportsController extends Controller
+class RapportsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(function ($request, $next) {
+                if (auth()->user()->role !== 'administrateur') {
+                    abort(403, 'Accès réservé aux administrateurs.');
+                }
+                return $next($request);
+            }),
+        ];
+    }
+
     public function index(Request $request)
     {
         $dateDebut = $request->input(
@@ -81,7 +95,7 @@ class RapportsController extends Controller
     {
         return back()->with(
             'error',
-            'L’export sera activé après la mise en place du module Excel/PDF.'
+            'L\'export sera activé après la mise en place du module Excel/PDF.'
         );
     }
 }

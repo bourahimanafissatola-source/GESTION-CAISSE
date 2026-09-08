@@ -207,7 +207,7 @@
             </a>
          
                     @auth
-    @if(auth()->user()->role === 'admin')
+   @if(auth()->user()->role === 'administrateur')
         <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
             <i class="bi bi-people"></i> Utilisateurs
         </a>
