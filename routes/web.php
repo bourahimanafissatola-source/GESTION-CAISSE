@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Routes réservées uniquement à l'ADMIN
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'role:administrateur'])->group(function () {
 
     Route::resource('users', UsersController::class);
 
