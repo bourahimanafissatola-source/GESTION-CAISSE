@@ -30,6 +30,7 @@ class UsersController extends Controller
         $data['password'] = bcrypt($data['password']);
 
         User::create($data);
+        \App\Models\ActivityLog::log('creation_utilisateur', "Création de l'utilisateur {$data['name']} ({$data['role']})."); 
 
         return redirect()->route('users.index')->with('success', 'Utilisateur créé.');
     }
@@ -55,12 +56,14 @@ class UsersController extends Controller
         }
 
         $user->update($data);
+        \App\Models\ActivityLog::log('modification_utilisateur', "Modification de l'utilisateur {$user->name}.");
 
         return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour.');
     }
 
     public function destroy(User $user)
     {
+        \App\Models\ActivityLog::log('suppression_utilisateur', "Suppression de l'utilisateur {$user->name}.");
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Utilisateur supprimé.');
     }

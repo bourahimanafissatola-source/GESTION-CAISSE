@@ -30,11 +30,32 @@
     .t-desc { font-size: .88rem; }
     .t-meta { font-size: .75rem; color: var(--ink-soft); margin-top: .2rem; }
     .cs-empty { padding: 3rem 1.5rem; text-align: center; color: var(--ink-soft); }
+    .online-panel { background: #fff; border: 1px solid var(--sage); border-radius: 6px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; }
+.online-panel h2 { font-size: .85rem; font-weight: 600; margin: 0 0 .8rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .03em; }
+.online-list { display: flex; flex-wrap: wrap; gap: .6rem; }
+.online-chip { display: flex; align-items: center; gap: .5rem; background: var(--cream); border-radius: 20px; padding: .4rem .9rem .4rem .6rem; font-size: .82rem; }
+.online-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pos); flex-shrink: 0; box-shadow: 0 0 0 3px rgba(46,125,80,.15); }
+.online-empty { color: var(--ink-soft); font-size: .82rem; }
 </style>
 
 <div class="page-head">
     <h1>Journal d'activité</h1>
     <p>Historique des actions effectuées par les utilisateurs.</p>
+</div>
+<div class="online-panel">
+    <h2>Connectés actuellement</h2>
+    @if($enLigne->isEmpty())
+        <div class="online-empty">Aucun utilisateur en ligne pour le moment.</div>
+    @else
+        <div class="online-list">
+            @foreach($enLigne as $u)
+                <div class="online-chip">
+                    <span class="online-dot"></span>
+                    {{ $u->name }}
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>
 
 <form method="GET" class="filter-bar">
