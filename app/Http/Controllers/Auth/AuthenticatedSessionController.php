@@ -27,6 +27,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        \App\Models\ActivityLog::log('connexion', auth()->user()->name . ' s\'est connecté(e).');
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -35,6 +37,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        \App\Models\ActivityLog::log('deconnexion', auth()->user()->name . ' s\'est déconnecté(e).');
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
