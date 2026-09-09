@@ -43,7 +43,7 @@ class EntreeController extends Controller
             'date_operation' => $request->date_operation,
             'description' => $request->description,
         ]);
-        \App\Models\ActivityLog::log('entree_creee', auth()->user()->name . ' a enregistré une entrée de ' . number_format($data['montant'] ?? $request->montant, 0, ',', ' ') . ' FCFA (' . ($request->libelle) . ')');
+       \App\Models\ActivityLog::log('entree_creee', auth()->user()->name . ' a enregistré une entrée de ' . number_format($request->montant, 0, ',', ' ') . ' FCFA (' . $request->libelle . ')');
 
         return redirect()->route('entrees.index')
             ->with('success','Entrée enregistrée avec succès.');

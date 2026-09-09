@@ -28,6 +28,8 @@ class CategorieSortieController extends Controller
 
         CategorieSortie::create($request->all());
 
+        \App\Models\ActivityLog::log('categorie_sortie_creee', auth()->user()->name . ' a ajouté la catégorie de sortie "' . $request->libelle . '"');
+
         return redirect()->route('categories-sorties.index')
             ->with('success', 'Catégorie créée avec succès.');
     }
@@ -48,12 +50,16 @@ class CategorieSortieController extends Controller
 
         $categories_sortie->update($request->all());
 
+        \App\Models\ActivityLog::log('categorie_sortie_modifiee', auth()->user()->name . ' a modifié la catégorie de sortie "' . $categories_sortie->libelle . '"');
+
         return redirect()->route('categories-sorties.index')
             ->with('success', 'Catégorie modifiée.');
     }
 
     public function destroy(CategorieSortie $categories_sortie)
     {
+        \App\Models\ActivityLog::log('categorie_sortie_supprimee', auth()->user()->name . ' a supprimé la catégorie de sortie "' . $categories_sortie->libelle . '"');
+
         $categories_sortie->delete();
 
         return redirect()->route('categories-sorties.index')

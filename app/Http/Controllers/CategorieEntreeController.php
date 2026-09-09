@@ -28,6 +28,8 @@ class CategorieEntreeController extends Controller
 
         CategorieEntree::create($validated);
 
+        \App\Models\ActivityLog::log('categorie_entree_creee', auth()->user()->name . ' a ajouté la catégorie d\'entrée "' . $validated['libelle'] . '"');
+
         return redirect()
             ->route('categories-entrees.index')
             ->with('success', 'Catégorie d’entrée ajoutée avec succès.');
@@ -49,6 +51,8 @@ class CategorieEntreeController extends Controller
 
         $categories_entree->update($validated);
 
+        \App\Models\ActivityLog::log('categorie_entree_modifiee', auth()->user()->name . ' a modifié la catégorie d\'entrée "' . $categories_entree->libelle . '"');
+
         return redirect()
             ->route('categories-entrees.index')
             ->with('success', 'Catégorie modifiée avec succès.');
@@ -56,6 +60,8 @@ class CategorieEntreeController extends Controller
 
     public function destroy(CategorieEntree $categories_entree)
     {
+        \App\Models\ActivityLog::log('categorie_entree_supprimee', auth()->user()->name . ' a supprimé la catégorie d\'entrée "' . $categories_entree->libelle . '"');
+
         $categories_entree->delete();
 
         return redirect()
