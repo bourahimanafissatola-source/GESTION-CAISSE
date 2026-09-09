@@ -10,7 +10,7 @@ class DashboardController extends Controller
     public function index()
     {
         $totalEntrees = Entree::sum('montant');
-        $totalSorties = Sortie::sum('montant');
+        $totalSorties = Sortie::where('statut', 'validee')->sum('montant');
         $solde = $totalEntrees - $totalSorties;
         $nombreOperations = Entree::count() + Sortie::count();
 
@@ -58,13 +58,15 @@ class DashboardController extends Controller
         })->toArray();
 
         $evolutionSorties = $mois->map(function ($m) {
-            return (float) Sortie::whereYear('date_sortie', $m->year)
+            return (float) Sortie::where('statut', 'validee')
+                ->whereYear('date_sortie', $m->year)
                 ->whereMonth('date_sortie', $m->month)
                 ->sum('montant');
         })->toArray();
 
-        // Répartition des sorties par catégorie (mois en cours)
+        // Répartition des sorties par catégorie (mois en cours) — uniquement validées
         $repartitionSorties = Sortie::with('categorie')
+            ->where('statut', 'validee')
             ->whereMonth('date_sortie', now()->month)
             ->whereYear('date_sortie', now()->year)
             ->get()

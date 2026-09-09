@@ -244,9 +244,6 @@
             <input type="checkbox" name="remember" style="width:auto;">
             Se souvenir de moi
         </label>
-        @if (Route::has('password.request'))
-            <a href="{{ route('password.request') }}">Mot de passe oublié ?</a>
-        @endif
     </div>
 
     <button type="submit" class="btn-primary">Se connecter</button>

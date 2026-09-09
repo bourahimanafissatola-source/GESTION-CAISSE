@@ -49,7 +49,7 @@ class RapportsController extends Controller implements HasMiddleware
                 return $entree;
             });
 
-        // SORTIES
+        // SORTIES (toutes, pour affichage dans le tableau)
         $sorties = Sortie::whereBetween('date_sortie', [
                 $dateDebut,
                 $dateFin
@@ -71,15 +71,15 @@ class RapportsController extends Controller implements HasMiddleware
             $entrees = collect();
         }
 
-        // FUSION DES OPÉRATIONS
+        // FUSION DES OPÉRATIONS (affichage : toutes, peu importe le statut)
         $operations = $entrees
             ->concat($sorties)
             ->sortByDesc('date')
             ->values();
 
-        // TOTAUX
+        // TOTAUX — le solde ne compte que les sorties validées
         $totalEntrees = $entrees->sum('montant');
-        $totalSorties = $sorties->sum('montant');
+        $totalSorties = $sorties->where('statut', 'validee')->sum('montant');
 
         return view('rapports.index', compact(
             'operations',
