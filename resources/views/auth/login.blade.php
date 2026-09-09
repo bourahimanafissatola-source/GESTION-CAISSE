@@ -87,7 +87,6 @@
         .switch-link { text-align: center; margin-top: 1.5rem; font-size: .85rem; color: var(--ink-soft); }
         .switch-link a { color: var(--forest); font-weight: 500; text-decoration: none; }
         .switch-link a:hover { text-decoration: underline; }
-        ```css
 /* ================================
    RESPONSIVE - CONNEXION
    ================================ */
@@ -184,7 +183,7 @@
         margin-top: .2rem;
     }
 }
-```
+
 
     </style>
 </head>

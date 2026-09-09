@@ -92,15 +92,22 @@
         </div>
 
         <div class="form-row">
-            <label>Justificatif <span class="hint">reçu ou décharge — photo ou PDF</span></label>
-            <label class="upload-zone" for="justificatif">
-                <i class="bi bi-cloud-arrow-up"></i>
-                <span>Cliquer pour scanner ou téléverser un fichier</span>
-                <input type="file" name="justificatif" id="justificatif" accept="image/*,application/pdf" capture="environment">
-            </label>
-            <div id="fileName"></div>
-            @error('justificatif') <div class="error-msg">{{ $message }}</div> @enderror
-        </div>
+    <label>Justificatif <span class="hint">reçu ou décharge — photo ou PDF</span></label>
+    <div style="display:flex; gap:.7rem; flex-wrap:wrap;">
+        <label class="upload-zone" for="justificatif_photo" style="flex:1; min-width:150px;">
+            <i class="bi bi-camera"></i>
+            <span>Prendre une photo</span>
+            <input type="file" name="justificatif" id="justificatif_photo" accept="image/*" capture="environment">
+        </label>
+        <label class="upload-zone" for="justificatif_fichier" style="flex:1; min-width:150px;">
+            <i class="bi bi-folder2-open"></i>
+            <span>Choisir un fichier</span>
+            <input type="file" name="justificatif" id="justificatif_fichier" accept="image/*,application/pdf">
+        </label>
+    </div>
+    <div id="fileName"></div>
+    @error('justificatif') <div class="error-msg">{{ $message }}</div> @enderror
+</div>
 
         <div class="form-row">
             <label>Description <span class="hint">optionnel</span></label>
@@ -117,18 +124,16 @@
 </div>
 
 <script>
-document.getElementById('justificatif')?.addEventListener('change', function () {
-    document.getElementById('fileName').textContent = this.files.length ? '📎 ' + this.files[0].name : '';
+document.querySelectorAll('#justificatif_photo, #justificatif_fichier').forEach(function (input) {
+    input.addEventListener('change', function () {
+        if (this.files.length) {
+            document.getElementById('fileName').textContent = '📎 ' + this.files[0].name;
+            // Vide l'autre champ pour éviter d'envoyer deux fichiers
+            document.querySelectorAll('#justificatif_photo, #justificatif_fichier').forEach(function (other) {
+                if (other !== input) other.value = '';
+            });
+        }
+    });
 });
-    (function () {
-        const affiche = document.getElementById('montant_affiche');
-        const reel = document.getElementById('montant_reel');
-
-        affiche.addEventListener('input', function () {
-            let chiffres = this.value.replace(/\D/g, '');
-            reel.value = chiffres;
-            this.value = chiffres ? new Intl.NumberFormat('fr-FR').format(chiffres) : '';
-        });
-    })();
 </script>
 @endsection
