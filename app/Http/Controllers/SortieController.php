@@ -27,7 +27,7 @@ class SortieController extends Controller
     }
 
     // Enregistrer une sortie
-public function store(Request $request)
+ public function store(Request $request)
 {
     $data = $request->validate([
         'categorie_sortie_id' => 'required|exists:categories_sorties,id',
@@ -39,17 +39,6 @@ public function store(Request $request)
         'justificatif' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
     ]);
 
-    // Calcul du solde actuel
-    $totalEntrees = \App\Models\Entree::sum('montant');
-    $totalSorties = Sortie::sum('montant');
-    $solde = $totalEntrees - $totalSorties;
-
-    if ($data['montant'] > $solde) {
-        return back()
-            ->withInput()
-            ->withErrors(['montant' => 'Solde insuffisant. Solde disponible : ' . number_format($solde, 0, ',', ' ') . ' FCFA.']);
-    }
-
     if ($request->hasFile('justificatif')) {
         $data['justificatif_path'] = $request->file('justificatif')->store('justificatifs', 'public');
     }
@@ -58,10 +47,10 @@ public function store(Request $request)
     $data['statut'] = 'en_attente';
 
     Sortie::create($data);
-    // dans store(), avant le redirect
-\App\Models\ActivityLog::log('sortie_creee', auth()->user()->name . ' a enregistré une sortie de ' . number_format($data['montant'], 0, ',', ' ') . ' FCFA (' . $data['libelle'] . ')');
 
-    return redirect()->route('sorties.index')->with('success', 'Sortie enregistrée.');
+    \App\Models\ActivityLog::log('sortie_creee', auth()->user()->name . ' a enregistré une sortie de ' . number_format($data['montant'], 0, ',', ' ') . ' FCFA (' . $data['libelle'] . ')');
+
+    return redirect()->route('sorties.index')->with('success', 'Sortie enregistrée, en attente de validation.');
 }
 
     // Formulaire de modification
@@ -88,23 +77,13 @@ public function update(Request $request, Sortie $sortie)
         'justificatif' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
     ]);
 
-    $totalEntrees = \App\Models\Entree::sum('montant');
-    $totalSortiesAutres = Sortie::where('id', '!=', $sortie->id)->sum('montant');
-    $solde = $totalEntrees - $totalSortiesAutres;
-
-    if ($data['montant'] > $solde) {
-        return back()
-            ->withInput()
-            ->withErrors(['montant' => 'Solde insuffisant. Solde disponible : ' . number_format($solde, 0, ',', ' ') . ' FCFA.']);
-    }
-
     if ($request->hasFile('justificatif')) {
         $data['justificatif_path'] = $request->file('justificatif')->store('justificatifs', 'public');
     }
 
     $sortie->update($data);
-    // dans update()
-\App\Models\ActivityLog::log('sortie_modifiee', auth()->user()->name . ' a modifié la sortie "' . $sortie->libelle . '"');
+
+    \App\Models\ActivityLog::log('sortie_modifiee', auth()->user()->name . ' a modifié la sortie "' . $sortie->libelle . '"');
 
     return redirect()->route('sorties.index')->with('success', 'Sortie modifiée avec succès.');
 }
@@ -119,15 +98,24 @@ public function update(Request $request, Sortie $sortie)
         return redirect()->route('sorties.index')
             ->with('success', 'Sortie supprimée.');
     }
-    public function valider(Sortie $sortie)
+public function valider(Sortie $sortie)
 {
     if (!in_array(auth()->user()->role, ['administrateur', 'superviseur'])) {
         abort(403, 'Action non autorisée.');
     }
 
+    $totalEntrees = \App\Models\Entree::sum('montant');
+    $totalSortiesValidees = Sortie::where('statut', 'validee')->where('id', '!=', $sortie->id)->sum('montant');
+    $solde = $totalEntrees - $totalSortiesValidees;
+
+    if ($sortie->montant > $solde) {
+        return back()->withErrors(['montant' => 'Solde insuffisant pour valider cette sortie. Solde disponible : ' . number_format($solde, 0, ',', ' ') . ' FCFA.']);
+    }
+
     $sortie->update(['statut' => 'validee']);
-    // dans valider()
-\App\Models\ActivityLog::log('sortie_validee', auth()->user()->name . ' a validé la sortie "' . $sortie->libelle . '"');
+
+    \App\Models\ActivityLog::log('sortie_validee', auth()->user()->name . ' a validé la sortie "' . $sortie->libelle . '"');
+
     return redirect()->route('sorties.index')->with('success', 'Sortie validée.');
 }
 
