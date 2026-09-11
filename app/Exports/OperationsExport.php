@@ -10,8 +10,11 @@ public function __construct($operations) {
                            $this->operations = $operations; 
                                            } 
                                            
-public function collection() { 
-    return $this->operations; } 
+public function collection(): \Illuminate\Support\Collection
+{
+    return $this->operations;
+}
+     
     
 public function headings(): array { 
         return ['Date', 'Type', 'Libellé', 'Catégorie', 'Montant (FCFA)', 'Statut'];
