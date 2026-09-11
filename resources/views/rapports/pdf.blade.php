@@ -30,7 +30,7 @@
      <td>{{ $op->type === 'entree' ? 'Entrée' : 'Sortie' }}</td>
       <td>{{ $op->libelle }}</td>
        <td>{{ $op->categorie_nom ?? '' }}</td> 
-       <td class="{{ $op->type }}">{{ $op->type === 'entree' ? '+' : '−' }}{{ number_format($op->montant, 0, ',', ' ') }} FCFA</td> </tr> @endforeach 
+       <td class="{{ $op->type }}">{{ $op->type === 'entree' ? '+' : '-' }}{{ number_format($op->montant, 0, ',', ' ') }} FCFA</td> </tr> @endforeach 
        </tbody>
         </table> 
         <table class="totaux">
