@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sortie;
 use App\Models\CategorieSortie;
 use Illuminate\Http\Request;
+use App\Services\CloudinaryService;
 
 class SortieController extends Controller
 {
@@ -27,20 +28,30 @@ class SortieController extends Controller
     }
 
     // Enregistrer une sortie
- public function store(Request $request)
+public function store(Request $request)
 {
     $data = $request->validate([
         'categorie_sortie_id' => 'required|exists:categories_sorties,id',
-        'libelle' => 'required|string|max:255',
-        'montant' => 'required|numeric|min:0',
-        'date_sortie' => 'required|date',
-        'beneficiaire' => 'nullable|string|max:255',
-        'description' => 'nullable|string',
-        'justificatif' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        'libelle'             => 'required|string|max:255',
+        'montant'             => 'required|numeric|min:0',
+        'date_sortie'         => 'required|date',
+        'beneficiaire'        => 'nullable|string|max:255',
+        'description'         => 'nullable|string',
+        'justificatif'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
     ]);
 
+    // Upload Cloudinary
     if ($request->hasFile('justificatif')) {
-        $data['justificatif_path'] = $request->file('justificatif')->store('justificatifs', 'public');
+
+        $cloudinary = new CloudinaryService();
+
+        $image = $cloudinary->upload(
+            $request->file('justificatif'),
+            'gestion-caisse/justificatifs'
+        );
+
+        $data['justificatif_path'] = $image['url'];
+        $data['public_id'] = $image['public_id'];
     }
 
     $data['user_id'] = auth()->id();
@@ -48,11 +59,17 @@ class SortieController extends Controller
 
     Sortie::create($data);
 
-    \App\Models\ActivityLog::log('sortie_creee', auth()->user()->name . ' a enregistré une sortie de ' . number_format($data['montant'], 0, ',', ' ') . ' FCFA (' . $data['libelle'] . ')');
+    \App\Models\ActivityLog::log(
+        'sortie_creee',
+        auth()->user()->name .
+        ' a enregistré une sortie de ' .
+        number_format($data['montant'], 0, ',', ' ') .
+        ' FCFA (' . $data['libelle'] . ')'
+    );
 
-    return redirect()->route('sorties.index')->with('success', 'Sortie enregistrée, en attente de validation.');
+    return redirect()->route('sorties.index')
+        ->with('success', 'Sortie enregistrée avec justificatif Cloudinary.');
 }
-
     // Formulaire de modification
       public function edit(Sortie $sorty)
 {
@@ -78,9 +95,17 @@ public function update(Request $request, Sortie $sortie)
     ]);
 
     if ($request->hasFile('justificatif')) {
-        $data['justificatif_path'] = $request->file('justificatif')->store('justificatifs', 'public');
-    }
 
+    $cloudinary = new CloudinaryService();
+
+    $image = $cloudinary->upload(
+        $request->file('justificatif'),
+        'gestion-caisse/justificatifs'
+    );
+
+    $data['justificatif_path'] = $image['url'];
+    $data['public_id'] = $image['public_id'];
+}
     $sortie->update($data);
 
     \App\Models\ActivityLog::log('sortie_modifiee', auth()->user()->name . ' a modifié la sortie "' . $sortie->libelle . '"');
@@ -89,15 +114,26 @@ public function update(Request $request, Sortie $sortie)
 }
 
     // Suppression
-    public function destroy(Sortie $sortie)
-    {
-        $sortie->delete();
-        // dans destroy()
-\App\Models\ActivityLog::log('sortie_supprimee', auth()->user()->name . ' a supprimé la sortie "' . $sortie->libelle . '"');
+   public function destroy(Sortie $sortie)
+{
+    // Supprimer l'image sur Cloudinary
+    if (!empty($sortie->public_id)) {
 
-        return redirect()->route('sorties.index')
-            ->with('success', 'Sortie supprimée.');
+        $cloudinary = new CloudinaryService();
+        $cloudinary->delete($sortie->public_id);
     }
+
+    \App\Models\ActivityLog::log(
+        'sortie_supprimee',
+        auth()->user()->name .
+        ' a supprimé la sortie "' . $sortie->libelle . '"'
+    );
+
+    $sortie->delete();
+
+    return redirect()->route('sorties.index')
+        ->with('success', 'Sortie supprimée avec son justificatif.');
+}
 public function valider(Sortie $sortie)
 {
     if (!in_array(auth()->user()->role, ['administrateur', 'superviseur'])) {

@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Sortie extends Model
@@ -12,12 +14,13 @@ class Sortie extends Model
         'beneficiaire',
         'description',
         'justificatif_path',
+        'public_id',
         'user_id',
         'statut',
     ];
 
     protected $casts = [
-        'date_sortie' => 'date'
+        'date_sortie' => 'date',
     ];
 
     public function categorie()

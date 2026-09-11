@@ -96,14 +96,27 @@
                     <td><span class="statut-badge {{ $sortie->statut }}">{{ ucfirst(str_replace('_',' ', $sortie->statut)) }}</span></td>
                      <td>{{ $entree->user->name ?? '—' }}</td>
                     <td>
-                        @if($sortie->justificatif_path)
-                            <a href="{{ asset('storage/'.$sortie->justificatif_path) }}" target="_blank" class="justif-link" title="Voir le justificatif">
-                                <i class="bi bi-file-earmark-check"></i>
-                            </a>
-                        @else
-                            <span class="justif-none">—</span>
-                        @endif
-                    </td>
+    @if($sortie->justificatif_path)
+        <a href="{{ $sortie->justificatif_path }}" target="_blank" title="Voir le justificatif">
+
+            <img src="{{ $sortie->justificatif_path }}"
+                 alt="Justificatif"
+                 width="70"
+                 height="70"
+                 style="
+                    object-fit: cover;
+                    border-radius: 10px;
+                    border: 1px solid #E4E9E1;
+                    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+                 ">
+
+        </a>
+    @else
+        <span class="justif-none">
+            <i class="bi bi-image"></i> Aucun
+        </span>
+    @endif
+</td>
                       <td class="actions">
     @if($sortie->statut === 'en_attente' && in_array(auth()->user()->role, ['administrateur', 'superviseur']))
         <form action="{{ route('sorties.valider', $sortie->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Valider cette sortie ?');">
