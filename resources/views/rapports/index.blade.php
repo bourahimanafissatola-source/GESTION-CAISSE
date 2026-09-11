@@ -109,7 +109,7 @@
                     <td>{{ \Carbon\Carbon::parse($op->date)->format('d/m/Y') }}</td>
                     <td>{{ $op->type === 'entree' ? 'Entrée' : 'Sortie' }}</td>
                     <td>{{ $op->libelle }}</td>
-                    <td>{{ $op->categorie }}</td>
+                    <td>{{ $op->categorie_nom }}</td>
                     <td class="amount {{ $op->type }}">
                         {{ $op->type === 'entree' ? '+' : '−' }}{{ number_format($op->montant, 0, ',', ' ') }} FCFA
                     </td>

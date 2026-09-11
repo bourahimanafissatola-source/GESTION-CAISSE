@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Entree;
 use App\Models\Sortie;
+use App\Exports\OperationsExport;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RapportsController extends Controller implements HasMiddleware
 {
@@ -22,80 +25,66 @@ class RapportsController extends Controller implements HasMiddleware
         ];
     }
 
-    public function index(Request $request)
+    protected function getOperations(Request $request)
     {
-        $dateDebut = $request->input(
-            'date_debut',
-            now()->startOfMonth()->format('Y-m-d')
-        );
-
-        $dateFin = $request->input(
-            'date_fin',
-            now()->format('Y-m-d')
-        );
-
+        $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+        $dateFin = $request->input('date_fin', now()->format('Y-m-d'));
         $type = $request->input('type');
 
-        // ENTRÉES
-        $entrees = Entree::whereBetween('date_operation', [
-                $dateDebut,
-                $dateFin
-            ])
+        $entrees = Entree::with('categorie')
+            ->whereBetween('date_operation', [$dateDebut, $dateFin])
             ->get()
             ->map(function ($entree) {
                 $entree->type = 'entree';
                 $entree->date = $entree->date_operation;
-                $entree->categorie = $entree->categorie_entree_id;
+                $entree->categorie_nom = $entree->categorie->libelle ?? '';
                 return $entree;
             });
 
-        // SORTIES (toutes, pour affichage dans le tableau)
-        $sorties = Sortie::whereBetween('date_sortie', [
-                $dateDebut,
-                $dateFin
-            ])
+        $sorties = Sortie::with('categorie')
+            ->whereBetween('date_sortie', [$dateDebut, $dateFin])
             ->get()
             ->map(function ($sortie) {
                 $sortie->type = 'sortie';
                 $sortie->date = $sortie->date_sortie;
-                $sortie->categorie = $sortie->categorie_sortie_id;
+                $sortie->categorie_nom = $sortie->categorie->libelle ?? '';
                 return $sortie;
             });
 
-        // FILTRE PAR TYPE
         if ($type === 'entree') {
             $sorties = collect();
         }
-
         if ($type === 'sortie') {
             $entrees = collect();
         }
 
-        // FUSION DES OPÉRATIONS (affichage : toutes, peu importe le statut)
-        $operations = $entrees
-            ->concat($sorties)
-            ->sortByDesc('date')
-            ->values();
+        $operations = $entrees->concat($sorties)->sortByDesc('date')->values();
 
-        // TOTAUX — le solde ne compte que les sorties validées
         $totalEntrees = $entrees->sum('montant');
         $totalSorties = $sorties->where('statut', 'validee')->sum('montant');
 
-        return view('rapports.index', compact(
-            'operations',
-            'totalEntrees',
-            'totalSorties',
-            'dateDebut',
-            'dateFin',
-            'type'
-        ));
+        return compact('operations', 'totalEntrees', 'totalSorties', 'dateDebut', 'dateFin', 'type');
+    }
+
+    public function index(Request $request)
+    {
+        return view('rapports.index', $this->getOperations($request));
     }
 
     public function export(Request $request)
     {
-        return back()->with(
-            'error',
-            'L\'export sera activé après la mise en place du module Excel/PDF.'
-        );
+        $format = $request->input('format', 'excel');
+        $data = $this->getOperations($request);
+
+        \App\Models\ActivityLog::log('export_rapport', auth()->user()->name . ' a exporté un rapport en ' . strtoupper($format) . ' (' . $data['dateDebut'] . ' au ' . $data['dateFin'] . ').');
+
+        $nomFichier = 'releve-caisse_' . $data['dateDebut'] . '_' . $data['dateFin'];
+
+        if ($format === 'pdf') {
+            $pdf = Pdf::loadView('rapports.pdf', $data);
+            return $pdf->download($nomFichier . '.pdf');
+        }
+
+        return Excel::download(new OperationsExport($data['operations']), $nomFichier . '.xlsx');
     }
 }
