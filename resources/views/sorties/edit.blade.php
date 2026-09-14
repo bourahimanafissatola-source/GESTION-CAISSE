@@ -34,7 +34,17 @@
     .upload-zone:hover { border-color: var(--gold); background: var(--cream); }
     .upload-zone i { font-size: 1.4rem; display: block; margin-bottom: .4rem; color: var(--forest); }
     .upload-zone span { font-size: .8rem; }
-    .upload-zone input[type=file] { display: none; }
+   .upload-zone input[type=file] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
     #fileName { font-size: .78rem; color: var(--forest); margin-top: .5rem; }
 
     .form-actions { display: flex; gap: .8rem; margin-top: .5rem; padding-top: 1.3rem; border-top: 1px solid var(--sage); }
