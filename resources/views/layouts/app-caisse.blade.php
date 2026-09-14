@@ -185,7 +185,7 @@
 
     <div class="sidebar" id="sidebar">
         <div class="logo">
-            <h2>Gestion de caisse</h2>
+            <h2>Gestion des dépenses</h2>
             <p>Version PRO 2026</p>
         </div>
 

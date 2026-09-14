@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion — Gestion de caisse</title>
+    <title>Connexion — Gestion des dépenses</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
@@ -192,7 +192,7 @@
 <div class="auth-split">
     <div class="auth-brand">
         <div>
-            <h1>Gestion de caisse</h1>
+            <h1>Gestion des dépenses</h1>
             <p class="tagline">Version PRO 2026</p>
         </div>
         <div class="quote">
@@ -204,7 +204,7 @@
     <div class="auth-form-side">
         <div class="auth-card">
             <h2>Connexion</h2>
-            <p class="sub">Accédez à votre espace de gestion de caisse.</p>
+            <p class="sub">Accédez à votre espace de Gestion des dépenses.</p>
 
             @session('status')
                 <div class="status-msg">{{ $value }}</div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vérification de l'email — Gestion de caisse</title>
+    <title>Vérification de l'email — Gestion des dépenses</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
@@ -40,7 +40,7 @@
 <div class="auth-split">
     <div class="auth-brand">
         <div>
-            <h1>Gestion de caisse</h1>
+            <h1>Gestion des dépenses</h1>
             <p class="tagline">Version PRO 2026</p>
         </div>
         <div class="quote">
