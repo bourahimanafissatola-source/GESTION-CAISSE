@@ -37,7 +37,7 @@ public function store(Request $request)
         'date_sortie'         => 'required|date',
         'beneficiaire'        => 'nullable|string|max:255',
         'description'         => 'nullable|string',
-        'justificatif'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+       'justificatif' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
     ]);
 
     // Upload Cloudinary
