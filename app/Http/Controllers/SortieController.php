@@ -55,7 +55,7 @@ public function store(Request $request)
     }
 
     $data['user_id'] = auth()->id();
-    $data['statut'] = 'en_attente';
+    $data['statut'] = auth()->user()->role === 'administrateur' ? 'validee' : 'en_attente';
 
     Sortie::create($data);
 
