@@ -91,49 +91,86 @@
             <input type="text" name="beneficiaire" placeholder="Nom de la personne ou structure payée" value="{{ old('beneficiaire') }}">
         </div>
 
-        <div class="form-row">
-    <label>Justificatif <span class="hint">reçu ou décharge — photo ou PDF</span></label>
-    <div style="display:flex; gap:.7rem; flex-wrap:wrap;">
-        <label class="upload-zone" for="justificatif_photo" style="flex:1; min-width:150px;">
-            <i class="bi bi-camera"></i>
-            <span>Prendre une photo</span>
-            <input type="file" name="justificatif" id="justificatif_photo" accept="image/*" capture="environment">
-        </label>
-        <label class="upload-zone" for="justificatif_fichier" style="flex:1; min-width:150px;">
-            <i class="bi bi-folder2-open"></i>
-            <span>Choisir un fichier</span>
-            <input type="file" name="justificatif" id="justificatif_fichier" accept="image/*,application/pdf">
-        </label>
-    </div>
+<div class="form-row">
+    <label>
+        Justificatif
+        <span class="hint">reçu ou décharge — photo ou PDF</span>
+    </label>
+
+    <label class="upload-zone" for="justificatif">
+        <i class="bi bi-camera"></i>
+        <span id="uploadText">Prendre une photo ou choisir un fichier</span>
+
+        <input
+            type="file"
+            name="justificatif"
+            id="justificatif"
+            accept="image/*,application/pdf"
+            capture="environment"
+        >
+    </label>
+
     <div id="fileName"></div>
-    @error('justificatif') <div class="error-msg">{{ $message }}</div> @enderror
-</div>
 
-        <div class="form-row">
-            <label>Description <span class="hint">optionnel</span></label>
-            <textarea name="description" rows="3" placeholder="Précisions sur l'opération...">{{ old('description') }}</textarea>
-        </div>
+    <!-- Aperçu de la photo -->
+    <div id="previewContainer" style="display:none; margin-top:1rem;">
+        <img
+            id="previewImage"
+            src=""
+            alt="Aperçu du justificatif"
+            style="
+                max-width: 100%;
+                max-height: 300px;
+                border-radius: 8px;
+                border: 1px solid var(--sage);
+                object-fit: contain;
+            "
+        >
+    </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">
-                <i class="bi bi-check-lg"></i> Enregistrer la sortie
-            </button>
-            <a href="{{ route('sorties.index') }}" class="btn-cancel">Annuler</a>
-        </div>
-    </form>
+    @error('justificatif')
+        <div class="error-msg">{{ $message }}</div>
+    @enderror
 </div>
 
 <script>
-document.querySelectorAll('#justificatif_photo, #justificatif_fichier').forEach(function (input) {
-    input.addEventListener('change', function () {
-        if (this.files.length) {
-            document.getElementById('fileName').textContent = '📎 ' + this.files[0].name;
-            // Vide l'autre champ pour éviter d'envoyer deux fichiers
-            document.querySelectorAll('#justificatif_photo, #justificatif_fichier').forEach(function (other) {
-                if (other !== input) other.value = '';
-            });
-        }
-    });
+const justificatif = document.getElementById('justificatif');
+const fileName = document.getElementById('fileName');
+const previewContainer = document.getElementById('previewContainer');
+const previewImage = document.getElementById('previewImage');
+const uploadText = document.getElementById('uploadText');
+
+justificatif.addEventListener('change', function () {
+
+    if (!this.files || !this.files.length) {
+        fileName.textContent = '';
+        previewContainer.style.display = 'none';
+        previewImage.src = '';
+        uploadText.textContent = 'Prendre une photo ou choisir un fichier';
+        return;
+    }
+
+    const file = this.files[0];
+
+    fileName.textContent = '📎 ' + file.name;
+    uploadText.textContent = 'Fichier sélectionné';
+
+    // Afficher l'aperçu uniquement pour les images
+    if (file.type.startsWith('image/')) {
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            previewImage.src = event.target.result;
+            previewContainer.style.display = 'block';
+        };
+
+        reader.readAsDataURL(file);
+
+    } else {
+        previewContainer.style.display = 'none';
+        previewImage.src = '';
+    }
 });
 (function () {
     const affiche = document.getElementById('montant_affiche');

@@ -94,7 +94,7 @@
                     <td>{{ $sortie->beneficiaire ?? '—' }}</td>
                     <td class="amount">−{{ number_format($sortie->montant, 0, ',', ' ') }} FCFA</td>
                     <td><span class="statut-badge {{ $sortie->statut }}">{{ ucfirst(str_replace('_',' ', $sortie->statut)) }}</span></td>
-                     <td>{{ $entree->user->name ?? '—' }}</td>
+                     <td>{{ $sortie->user?->name ?? '—' }}</td>
                     <td>
     @if($sortie->justificatif_path)
         <a href="{{ $sortie->justificatif_path }}" target="_blank" title="Voir le justificatif">
