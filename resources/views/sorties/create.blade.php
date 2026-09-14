@@ -30,7 +30,17 @@
     .upload-zone:hover { border-color: var(--gold); background: var(--cream); }
     .upload-zone i { font-size: 1.6rem; display: block; margin-bottom: .5rem; color: var(--forest); }
     .upload-zone span { font-size: .82rem; }
-    .upload-zone input[type=file] { display: none; }
+    .upload-zone input[type=file] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
     #fileName { font-size: .78rem; color: var(--forest); margin-top: .5rem; }
 
     .form-actions { display: flex; gap: .8rem; margin-top: .5rem; padding-top: 1.3rem; border-top: 1px solid var(--sage); }
@@ -74,11 +84,11 @@
 
         <div class="form-grid-2">
             <div class="form-row">
-    <label>Montant <span class="hint">FCFA</span></label>
-    <input type="text" id="montant_affiche" inputmode="numeric" placeholder="25 000" value="{{ old('montant') ? number_format(old('montant'), 0, ',', ' ') : '' }}" autocomplete="off">
-    <input type="hidden" name="montant" id="montant_reel" value="{{ old('montant') }}">
-    @error('montant') <div class="error-msg">{{ $message }}</div> @enderror
-</div>
+                <label>Montant <span class="hint">FCFA</span></label>
+                <input type="text" id="montant_affiche" inputmode="numeric" placeholder="25 000" value="{{ old('montant') ? number_format(old('montant'), 0, ',', ' ') : '' }}" autocomplete="off">
+                <input type="hidden" name="montant" id="montant_reel" value="{{ old('montant') }}">
+                @error('montant') <div class="error-msg">{{ $message }}</div> @enderror
+            </div>
             <div class="form-row">
                 <label>Date</label>
                 <input type="date" name="date_sortie" value="{{ old('date_sortie', date('Y-m-d')) }}" required>
@@ -91,121 +101,83 @@
             <input type="text" name="beneficiaire" placeholder="Nom de la personne ou structure payée" value="{{ old('beneficiaire') }}">
         </div>
 
-<div class="form-row">
-    <label>
-        Justificatif
-        <span class="hint">reçu ou décharge — photo ou PDF</span>
-    </label>
+        <div class="form-row">
+            <label>Justificatif <span class="hint">reçu ou décharge — photo ou PDF</span></label>
+            <div style="display:flex; gap:.7rem; flex-wrap:wrap;">
+                <label class="upload-zone" for="justificatif_photo" style="flex:1; min-width:150px;">
+                    <i class="bi bi-camera"></i>
+                    <span>Prendre une photo</span>
+                    <input type="file" name="justificatif" id="justificatif_photo" accept="image/*" capture="environment">
+                </label>
+                <label class="upload-zone" for="justificatif_fichier" style="flex:1; min-width:150px;">
+                    <i class="bi bi-folder2-open"></i>
+                    <span>Choisir un fichier</span>
+                    <input type="file" name="justificatif" id="justificatif_fichier" accept="image/*,application/pdf">
+                </label>
+            </div>
+            <div id="fileName"></div>
+            <div id="previewContainer" style="display:none; margin-top:1rem;">
+                <img id="previewImage" src="" alt="Aperçu du justificatif"
+                     style="max-width:100%; max-height:300px; border-radius:8px; border:1px solid var(--sage); object-fit:contain;">
+            </div>
+            @error('justificatif') <div class="error-msg">{{ $message }}</div> @enderror
+        </div>
 
-    <label class="upload-zone" for="justificatif">
-        <i class="bi bi-camera"></i>
-        <span id="uploadText">Prendre une photo ou choisir un fichier</span>
+        <div class="form-row">
+            <label>Description <span class="hint">optionnel</span></label>
+            <textarea name="description" rows="3" placeholder="Précisions sur l'opération...">{{ old('description') }}</textarea>
+        </div>
 
-        <input
-            type="file"
-            name="justificatif"
-            id="justificatif"
-            accept="image/*,application/pdf"
-            capture="environment"
-        >
-    </label>
-
-    <div id="fileName"></div>
-
-    <!-- Aperçu de la photo -->
-    <div id="previewContainer" style="display:none; margin-top:1rem;">
-        <img
-            id="previewImage"
-            src=""
-            alt="Aperçu du justificatif"
-            style="
-                max-width: 100%;
-                max-height: 300px;
-                border-radius: 8px;
-                border: 1px solid var(--sage);
-                object-fit: contain;
-            "
-        >
-    </div>
-
-    @error('justificatif')
-        <div class="error-msg">{{ $message }}</div>
-    @enderror
-    <div class="form-row">
-    <label>Description <span class="hint">optionnel</span></label>
-
-    <textarea
-        name="description"
-        rows="3"
-        placeholder="Précisions sur l'opération..."
-    >{{ old('description') }}</textarea>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-check-lg"></i> Enregistrer la sortie
+            </button>
+            <a href="{{ route('sorties.index') }}" class="btn-cancel">Annuler</a>
+        </div>
+    </form>
 </div>
-
-<div class="form-actions">
-    <button type="submit" class="btn-primary">
-        <i class="bi bi-check-lg"></i>
-        Enregistrer la sortie
-    </button>
-
-    <a href="{{ route('sorties.index') }}" class="btn-cancel">
-        Annuler
-    </a>
-</div>
-
-</form>
-
-</div>
-</div>
-
 
 <script>
-const justificatif = document.getElementById('justificatif');
-const fileName = document.getElementById('fileName');
-const previewContainer = document.getElementById('previewContainer');
-const previewImage = document.getElementById('previewImage');
-const uploadText = document.getElementById('uploadText');
+    const fileName = document.getElementById('fileName');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
 
-justificatif.addEventListener('change', function () {
+    document.querySelectorAll('#justificatif_photo, #justificatif_fichier').forEach(function (input) {
+        input.addEventListener('change', function () {
+            if (!this.files || !this.files.length) {
+                return;
+            }
 
-    if (!this.files || !this.files.length) {
-        fileName.textContent = '';
-        previewContainer.style.display = 'none';
-        previewImage.src = '';
-        uploadText.textContent = 'Prendre une photo ou choisir un fichier';
-        return;
-    }
+            const file = this.files[0];
+            fileName.textContent = '📎 ' + file.name;
 
-    const file = this.files[0];
+            document.querySelectorAll('#justificatif_photo, #justificatif_fichier').forEach(function (other) {
+                if (other !== input) other.value = '';
+            });
 
-    fileName.textContent = '📎 ' + file.name;
-    uploadText.textContent = 'Fichier sélectionné';
-
-    // Afficher l'aperçu uniquement pour les images
-    if (file.type.startsWith('image/')) {
-
-        const reader = new FileReader();
-
-        reader.onload = function (event) {
-            previewImage.src = event.target.result;
-            previewContainer.style.display = 'block';
-        };
-
-        reader.readAsDataURL(file);
-
-    } else {
-        previewContainer.style.display = 'none';
-        previewImage.src = '';
-    }
-});
-(function () {
-    const affiche = document.getElementById('montant_affiche');
-    const reel = document.getElementById('montant_reel');
-
-    affiche.addEventListener('input', function () {
-        let chiffres = this.value.replace(/\D/g, '');
-        reel.value = chiffres;
-        this.value = chiffres ? new Intl.NumberFormat('fr-FR').format(chiffres) : '';
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    previewImage.src = event.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+                previewImage.src = '';
+            }
+        });
     });
-})();
+
+    (function () {
+        const affiche = document.getElementById('montant_affiche');
+        const reel = document.getElementById('montant_reel');
+
+        affiche.addEventListener('input', function () {
+            let chiffres = this.value.replace(/\D/g, '');
+            reel.value = chiffres;
+            this.value = chiffres ? new Intl.NumberFormat('fr-FR').format(chiffres) : '';
+        });
+    })();
 </script>
 @endsection
