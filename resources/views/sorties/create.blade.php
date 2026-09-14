@@ -102,12 +102,11 @@
         <span id="uploadText">Prendre une photo ou choisir un fichier</span>
 
         <input
-            type="file"
-            name="justificatif"
-            id="justificatif"
-            accept="image/*,application/pdf"
-            capture="environment"
-        >
+    type="file"
+    name="justificatif"
+    id="justificatif"
+    accept="image/*,.heic,.heif,application/pdf"
+    capture="environment">
     </label>
 
     <div id="fileName"></div>
