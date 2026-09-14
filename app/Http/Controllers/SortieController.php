@@ -91,7 +91,7 @@ public function update(Request $request, Sortie $sortie)
         'date_sortie' => 'required|date',
         'beneficiaire' => 'nullable|max:255',
         'description' => 'nullable',
-        'justificatif' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        'justificatif' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
     ]);
 
     if ($request->hasFile('justificatif')) {
