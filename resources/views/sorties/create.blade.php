@@ -131,7 +131,32 @@
     @error('justificatif')
         <div class="error-msg">{{ $message }}</div>
     @enderror
+    <div class="form-row">
+    <label>Description <span class="hint">optionnel</span></label>
+
+    <textarea
+        name="description"
+        rows="3"
+        placeholder="Précisions sur l'opération..."
+    >{{ old('description') }}</textarea>
 </div>
+
+<div class="form-actions">
+    <button type="submit" class="btn-primary">
+        <i class="bi bi-check-lg"></i>
+        Enregistrer la sortie
+    </button>
+
+    <a href="{{ route('sorties.index') }}" class="btn-cancel">
+        Annuler
+    </a>
+</div>
+
+</form>
+
+</div>
+</div>
+
 
 <script>
 const justificatif = document.getElementById('justificatif');
