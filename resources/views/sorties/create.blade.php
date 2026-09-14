@@ -135,5 +135,15 @@ document.querySelectorAll('#justificatif_photo, #justificatif_fichier').forEach(
         }
     });
 });
+(function () {
+    const affiche = document.getElementById('montant_affiche');
+    const reel = document.getElementById('montant_reel');
+
+    affiche.addEventListener('input', function () {
+        let chiffres = this.value.replace(/\D/g, '');
+        reel.value = chiffres;
+        this.value = chiffres ? new Intl.NumberFormat('fr-FR').format(chiffres) : '';
+    });
+})();
 </script>
 @endsection

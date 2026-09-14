@@ -116,7 +116,7 @@
             <input type="text" name="libelle" placeholder="Exemple : Vente...." value="{{ old('libelle') }}" required>
             @error('libelle') <div class="error-msg">{{ $message }}</div> @enderror
         </div>
-
+                <div class="form-grid-2">
                 <div class="form-row">
     <label>Montant <span class="hint">FCFA</span></label>
     <input type="text" id="montant_affiche" inputmode="numeric" placeholder="25 000" value="{{ old('montant') ? number_format(old('montant'), 0, ',', ' ') : '' }}" autocomplete="off">
