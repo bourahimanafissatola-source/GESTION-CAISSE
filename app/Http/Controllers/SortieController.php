@@ -45,6 +45,13 @@ public function store(Request $request)
 
     // On prend celui des deux qui a été rempli
     $fichierJustificatif = $request->file('justificatif_photo') ?? $request->file('justificatif_fichier');
+    \Log::info('DEBUG justificatif', [
+    'hasFile_photo' => $request->hasFile('justificatif_photo'),
+    'hasFile_fichier' => $request->hasFile('justificatif_fichier'),
+    'file_photo' => $request->file('justificatif_photo'),
+    'file_fichier' => $request->file('justificatif_fichier'),
+    'fichierJustificatif_is_null' => is_null($fichierJustificatif),
+]);
 
     if ($fichierJustificatif) {
         $cloudinary = new CloudinaryService();
