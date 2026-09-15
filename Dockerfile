@@ -1,4 +1,5 @@
 FROM php:8.3-cli
+RUN echo "upload_max_filesize = 25M\npost_max_size = 30M\nmemory_limit = 256M" > /usr/local/etc/php/conf.d/uploads.ini
 
 RUN apt-get update && apt-get install -y \
     git \
