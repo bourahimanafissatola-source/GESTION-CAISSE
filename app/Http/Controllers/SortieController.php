@@ -10,10 +10,11 @@ use App\Services\CloudinaryService;
 class SortieController extends Controller
 {
     // Liste des sorties
-    public function index()
+public function index()
 {
     $sorties = Sortie::with(['categorie', 'user'])
         ->orderBy('date_sortie', 'desc')
+        ->orderBy('created_at', 'desc')
         ->paginate(10);
 
     return view('sorties.index', compact('sorties'));
@@ -27,7 +28,8 @@ class SortieController extends Controller
         return view('sorties.create', compact('categories'));
     }
 
-    // Enregistrer une sortie
+
+   // Enregistrer une sortie
 public function store(Request $request)
 {
     $data = $request->validate([
@@ -37,16 +39,18 @@ public function store(Request $request)
         'date_sortie'         => 'required|date',
         'beneficiaire'        => 'nullable|string|max:255',
         'description'         => 'nullable|string',
-       'justificatif' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+        'justificatif_photo'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+        'justificatif_fichier' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
     ]);
 
-    // Upload Cloudinary
-    if ($request->hasFile('justificatif')) {
+    // On prend celui des deux qui a été rempli
+    $fichierJustificatif = $request->file('justificatif_photo') ?? $request->file('justificatif_fichier');
 
+    if ($fichierJustificatif) {
         $cloudinary = new CloudinaryService();
 
         $image = $cloudinary->upload(
-            $request->file('justificatif'),
+            $fichierJustificatif,
             'gestion-caisse/justificatifs'
         );
 

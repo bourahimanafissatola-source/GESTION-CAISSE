@@ -107,12 +107,12 @@
                 <label class="upload-zone" for="justificatif_photo" style="flex:1; min-width:150px;">
                     <i class="bi bi-camera"></i>
                     <span>Prendre une photo</span>
-                    <input type="file" name="justificatif" id="justificatif_photo" accept="image/*" capture="environment">
+                   <input type="file" name="justificatif_photo" id="justificatif_photo" accept="image/*" capture="environment">
                 </label>
                 <label class="upload-zone" for="justificatif_fichier" style="flex:1; min-width:150px;">
                     <i class="bi bi-folder2-open"></i>
                     <span>Choisir un fichier</span>
-                    <input type="file" name="justificatif" id="justificatif_fichier" accept="image/*,application/pdf">
+                   <input type="file" name="justificatif_fichier" id="justificatif_fichier" accept="image/*,application/pdf">
                 </label>
             </div>
             <div id="fileName"></div>

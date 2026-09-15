@@ -49,16 +49,28 @@
         <label>Email</label>
         <input type="email" name="email" value="{{ old('email') }}" autocomplete="new-email" required>
         @error('email') <div class="error-msg">{{ $message }}</div> @enderror
+<div class="form-row">
+    <label>Mot de passe</label>
+    <div style="position:relative;">
+        <input type="password" name="password" id="password" autocomplete="new-password" required style="padding-right:2.6rem;">
+        <button type="button" onclick="togglePassword('password', this)"
+                style="position:absolute; right:.6rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--ink-soft); padding:0;">
+            <i class="bi bi-eye"></i>
+        </button>
     </div>
-        <div class="form-row">
-            <label>Mot de passe</label>
-            <input type="password" name="password" autocomplete="new-password" required>
-            @error('password') <div class="error-msg">{{ $message }}</div> @enderror
-        </div>
-        <div class="form-row">
-            <label>Confirmer le mot de passe</label>
-            <input type="password" name="password_confirmation" required>
-        </div>
+    @error('password') <div class="error-msg">{{ $message }}</div> @enderror
+</div>
+<div class="form-row">
+    <label>Confirmer le mot de passe</label>
+    <div style="position:relative;">
+        <input type="password" name="password_confirmation" id="password_confirmation" required style="padding-right:2.6rem;">
+        <button type="button" onclick="togglePassword('password_confirmation', this)"
+                style="position:absolute; right:.6rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--ink-soft); padding:0;">
+            <i class="bi bi-eye"></i>
+        </button>
+    </div>
+</div>
+
         <div class="form-row">
             <label>Profil d'accès</label>
             <div class="role-options">
@@ -87,4 +99,19 @@
         </div>
     </form>
 </div>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>
 @endsection

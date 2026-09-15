@@ -233,11 +233,18 @@
                autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
     </div>
 
-    <div class="form-row">
-        <label>Mot de passe</label>
-        <input type="password" name="password" required
-               autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+          <div class="form-row">
+    <label>Mot de passe</label>
+    <div style="position:relative;">
+        <input type="password" name="password" id="password" required
+               autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');"
+               style="padding-right:2.6rem;">
+        <button type="button" onclick="togglePassword('password', this)"
+                style="position:absolute; right:.6rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--ink-soft); padding:0;">
+            <i class="bi bi-eye"></i>
+        </button>
     </div>
+</div>
 
     <div class="form-options">
         <label>
@@ -251,6 +258,21 @@
         </div>
     </div>
 </div>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>
 
 </body>
 </html>
