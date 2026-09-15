@@ -39,19 +39,13 @@ public function store(Request $request)
         'date_sortie'         => 'required|date',
         'beneficiaire'        => 'nullable|string|max:255',
         'description'         => 'nullable|string',
-        'justificatif_photo'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
-        'justificatif_fichier' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+        'justificatif_photo'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+        'justificatif_fichier' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
     ]);
 
     // On prend celui des deux qui a été rempli
     $fichierJustificatif = $request->file('justificatif_photo') ?? $request->file('justificatif_fichier');
-    \Log::info('DEBUG justificatif', [
-    'hasFile_photo' => $request->hasFile('justificatif_photo'),
-    'hasFile_fichier' => $request->hasFile('justificatif_fichier'),
-    'file_photo' => $request->file('justificatif_photo'),
-    'file_fichier' => $request->file('justificatif_fichier'),
-    'fichierJustificatif_is_null' => is_null($fichierJustificatif),
-]);
+    
 
     if ($fichierJustificatif) {
         $cloudinary = new CloudinaryService();
@@ -102,7 +96,8 @@ public function update(Request $request, Sortie $sortie)
         'date_sortie' => 'required|date',
         'beneficiaire' => 'nullable|max:255',
         'description' => 'nullable',
-        'justificatif' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+        'justificatif_photo'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+        'justificatif_fichier' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
     ]);
 
     if ($request->hasFile('justificatif')) {

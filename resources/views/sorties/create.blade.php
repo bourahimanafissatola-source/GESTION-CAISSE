@@ -120,7 +120,8 @@
                 <img id="previewImage" src="" alt="Aperçu du justificatif"
                      style="max-width:100%; max-height:300px; border-radius:8px; border:1px solid var(--sage); object-fit:contain;">
             </div>
-            @error('justificatif') <div class="error-msg">{{ $message }}</div> @enderror
+                 @error('justificatif_photo') <div class="error-msg">{{ $message }}</div> @enderror
+                 @error('justificatif_fichier') <div class="error-msg">{{ $message }}</div> @enderror
         </div>
 
         <div class="form-row">
