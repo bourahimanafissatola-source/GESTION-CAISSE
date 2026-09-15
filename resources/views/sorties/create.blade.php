@@ -104,11 +104,6 @@
         <div class="form-row">
             <label>Justificatif <span class="hint">reçu ou décharge — photo ou PDF</span></label>
             <div style="display:flex; gap:.7rem; flex-wrap:wrap;">
-                {{<label class="upload-zone" for="justificatif_photo" style="flex:1; min-width:150px;">
-                    <i class="bi bi-camera"></i>
-                    <span>Prendre une photo</span>
-                   <input type="file" name="justificatif_photo" id="justificatif_photo" accept="image/*" capture="environment">
-                </label>}}
                 <label class="upload-zone" for="justificatif_fichier" style="flex:1; min-width:150px;">
                     <i class="bi bi-folder2-open"></i>
                     <span>Choisir un fichier</span>
